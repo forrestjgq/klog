@@ -30,6 +30,7 @@ func (m *manager) run() {
 			next++
 			for {
 				if s, exist := m.cache[next]; exist {
+					delete(m.cache, next)
 					m.out(s)
 					next++
 				} else {
