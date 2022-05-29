@@ -19,8 +19,21 @@ func Process(in, out string) {
 	cb := func(s string) {
 		fmt.Print(s)
 	}
+	var fd *os.File
+	if len(out) > 0 {
+		fd, err = os.Create(out)
+		if err != nil {
+			glog.Fatalf("create output file %s fail, err: %v", out, err)
+		}
+		cb = func(s string) {
+			_, _ = fd.WriteString(s)
+		}
+		defer func() {
+			_ = fd.Close()
+		}()
+	}
 
-	m := newManager(cb, 8)
+	m := newManager(cb, 20)
 	scan := bufio.NewScanner(f)
 
 	for {
